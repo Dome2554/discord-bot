@@ -28,7 +28,15 @@ async def on_ready():
 
 @bot.command(name='สูตรคูณ')
 async def multiplication(ctx, number: int):
-    table = "\n".join([f"{number} x {i} = {number * i}" for i in range(1, 13)])
-    await ctx.send(f"```\nแม่สูตรคูณแม่ {number}:\n{table}\n```")
+    # ปรับ range เป็น 101 เพื่อให้สูตรคูณวิ่งไปถึง 100
+    table = "\n".join([f"{number} x {i} = {number * i}" for i in range(1, 101)])
+    
+    # เนื่องจากข้อความยาวมาก เราเลยแบ่งส่งเพื่อป้องกัน Discord บล็อกข้อความยาวเกินไป
+    if len(table) > 1900:
+        chunks = [table[i:i+1900] for i in range(0, len(table), 1900)]
+        await ctx.send(f"```\nแม่สูตรคูณแม่ {number} (ถึง 100) - ส่วนที่ 1:\n{chunks[0]}\n```")
+        await ctx.send(f"```\nส่วนที่ 2:\n{chunks[1]}\n```")
+    else:
+        await ctx.send(f"```\nแม่สูตรคูณแม่ {number} (ถึง 100):\n{table}\n```")
 
 bot.run(os.getenv('TOKEN'))
